@@ -2,11 +2,11 @@ import sys
 
 def main():
     agrumentList = sys.argv
-    if len(sys.argv) != 2:
-        print("ERROR - Enter correct parameters - wordgame.py [word1] [word2]")
-        return
-    
-    fileName = sys.argv[1]
+##    if len(sys.argv) != 2:
+##        print("ERROR - Enter correct parameters - wordgame.py [word1] [word2]")
+##        return
+##    fileName = sys.argv[1]
+    fileName = "5lw-s.dat"
     
     try:
         #try to read in file
@@ -16,18 +16,37 @@ def main():
         print("ERROR - Unable to open specified file " + fileName)
         return
 
-    ### -----CREATE GRAPH------ ###
+    lines = file.readlines()
 
-    lines = fileName.readlines()
-
-    wordGraph = [[]]
-    
-    for line in lines:
-        v = Vertex(line)
-        print(line)
+    wordGraph = createGraph(lines)
 
     #Run test based on user input
     runTrial(wordGraph)
+
+
+def createGraph(lines):
+    wordGraph = {}
+    
+    for line in lines:
+        words = line.split(" ")
+
+        for word in words:
+            v = Vertex(word)
+            A = [[-1 for x in range(5)] for x in range(5)]
+            neighborList = []
+            
+            for k in wordGraph:
+                lcsScore = 5 - LCS_len(word, k, A)
+
+                if lcsScore >= 3:
+                    neighborList.append(k)
+                    wordGraph[k].append(v)
+            try:
+                wordGraph[word].append(neighborList)
+            except KeyError:
+                wordGraph[word] = neighborList
+
+    return wordGraph
             
 
 def runTrial(wordGraph):
@@ -36,7 +55,7 @@ def runTrial(wordGraph):
         userWord = input("Please enter a five-letter word to check: ")
 
         #makes sure word is in consistent case
-        userWord = userWord.toUpper()
+        userWord = userWord.upper()
 
         if len(userWord) != 5:
             raise ValueError("Whoops! Didn't enter a five letter word")
@@ -45,13 +64,22 @@ def runTrial(wordGraph):
     except ValueError as err:
         print(err.args)
 
-    #TODO: Check the given word in the graph and list out neighbors with\
-        #weights for each in parentheses. If not in graph, print message
+    #Test to see if user word in the neighbor list
+##    try:
+##        neighborList = wordGraph[userWord]
+##
+##        for v in neighborList:
+##            A = [[-1 for x in range(4)] for x in range(4)]
+##            score = LCS_len(userWord, v.getKey(), A)
+##            print(v.getKey() + " (" + str(score) + ") ", end = " ")
+##        
+##    except KeyError:
+##        print(userWord + " is not in the graph!")
 
     ### ----Ask User If they desire to do another trial---- ###
     while(True):
         doTrial = input("Do you wish to complete another trial? (Y/Yes, N/No) ")
-        doTrial = doTrial.toUpper()
+        doTrial = doTrial.upper()
 
         if doTrial is "Y" or doTrial is "YES":
             runTrial()
@@ -68,12 +96,12 @@ class Vertex:
         self.key = key
         self.handle = -1
 
-    def getHandle():
+    def getHandle(self):
         return self.handle
 
-    def setHandle(handle):
+    def setHandle(self, handle):
         self.handle = handle
 
-    def getKey():
+    def getKey(self):
         return self.key
 
