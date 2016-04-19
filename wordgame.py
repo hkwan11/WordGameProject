@@ -77,5 +77,3 @@ class Vertex:
     def getKey():
         return self.key
 
-main()
-
