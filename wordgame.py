@@ -6,7 +6,9 @@ def main():
 ##        print("ERROR - Enter correct parameters - wordgame.py [word1] [word2]")
 ##        return
 ##    fileName = sys.argv[1]
-    fileName = "5lw-m.dat"
+
+    #doesn't really run on the full file
+    fileName = "5lw.dat"
     
     try:
         #try to read in file
