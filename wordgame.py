@@ -2,13 +2,13 @@ import sys
 
 def main():
     agrumentList = sys.argv
-##    if len(sys.argv) != 2:
-##        print("ERROR - Enter correct parameters - wordgame.py [word1] [word2]")
-##        return dfdfd
-##    fileName = sys.argv[1]
+    if len(sys.argv) != 2:
+        print("ERROR - Enter correct parameters - wordgame.py [fileName]")
+        return
+    fileName = sys.argv[1]
 
     #doesn't really run on the full file
-    fileName = "5lw.dat"
+#    fileName = "5lw.dat"
     
     try:
         #try to read in file
@@ -126,10 +126,12 @@ def runTrial(wordGraph):
                 
             except KeyError:
                 print(userWord + " is not in the graph!")
+                return 1
         
     #if incorrect length, it is caught
     except ValueError as err:
         print(err.args)
+        return 1
 
     ### ----Ask User If they desire to do another trial---- ###
     doTrial = input("\nDo you wish to complete another trial? (Y/Yes, N/No) ")
@@ -163,4 +165,4 @@ class Vertex:
 
     def getWord(self):
         return self.word
-
+main()
