@@ -27,10 +27,12 @@ def main():
     rerun = runTrial(wordGraph)
     while(rerun):
         rerun = runTrial(wordGraph)
-
+        
 
 def createGraph(lines):
     wordGraph = {}
+
+    pastWordList = [[[] for x in range(5)] for y in range(26)]
     
     for line in lines:
         l = line.split("\n")
@@ -40,14 +42,34 @@ def createGraph(lines):
             if len(word) > 0 and word != "\n":
                 v = Vertex(word)
                 neighborList = []
-                
-                for k in wordGraph:
-                    missScore = getMissScore(word, k, len(word))
 
-                    if missScore != -1:
-                        vertexK = Vertex(k)
-                        neighborList.append(vertexK)
-                        wordGraph[k].append(v)
+                pastWords = {}
+
+                for c in range(len(word)):
+                    letterPos = (ord(word[c]) % 26)
+
+                    for pst in pastWordList[letterPos][c]:
+                        try:
+                            occur = pastWords[pst] + 1
+                            pastWords[pst] = occur
+                            if occur >= 3:
+                                pVert = Vertex(pst)
+                                neighborList.append(pVert)
+                        except KeyError:
+                            #print(pst)
+                            pastWords[pst] = 1
+                        #print(pastWords)
+                        
+                    pastWordList[letterPos][c].append(word)
+                #print(neighborList)
+                
+##                for k in wordGraph:
+##                    missScore = getMissScore(word, k, len(word))
+##
+##                    if missScore != -1:
+##                        vertexK = Vertex(k)
+##                        neighborList.append(vertexK)
+##                        wordGraph[k].append(v)
                 try:
                     wordGraph[word].append(neighborList)
                 except KeyError:
@@ -120,6 +142,58 @@ def runTrial(wordGraph):
         return 0
     else:
         print("Sorry, that is not a valid input")
+
+
+#Name: LCS_len
+#Purpose: To calculate and return the length of a longest-common-subsequence
+#   of the given strings
+#
+#Input: Strings X and Y. Array of values A
+#Output: Length of a longest-common-subsequence of the given strings
+def LCS_len(X, Y, A):
+    #Sets i and j as the last positions in the given strings
+    i = len(X) - 1
+    j = len(Y) - 1
+
+    #if we haven't run into the end of the string
+    if j >=0 and i >= 0:
+        #if the last characters of both strings aren't the same
+        if X[i] != Y[j]:
+
+            #check to see if left solution already stored
+            if i > 0 and A[i-1][j] != -1:   
+                answer1 = A[i-1][j]
+            else:
+                #get it and store it if not
+                answer1 = LCS_len(X[0:i], Y, A)
+                A[i-1][j] = answer1
+
+            #check to see if right solution already stored
+            if j > 0 and A[i][j-1] != -1:
+                answer2 = A[i][j-1]
+            else:
+                #get it and store it if not
+                answer2 = LCS_len(X, Y[0:j], A)
+                A[i][j-1] = answer2
+
+            #return the max value of both sub-calls
+            return max(answer1, answer2)
+        else:
+            #if both characters are the same
+
+            #check to see if recursive call has already been made
+            if i > 0 and j > 0 and A[i-1][j-1] != -1:
+                retAnswer = A[i-1][j-1]
+            else:
+                #if not, call it and store it
+                retAnswer = LCS_len(X[0:i], Y[0:j], A)
+                A[i-1][j-1] = retAnswer
+
+            #return incremented value
+            return 1 + retAnswer
+    else:
+        #if the end of the string, not a match so return a 0
+        return 0
 
 
 class Vertex:
