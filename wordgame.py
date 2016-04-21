@@ -4,7 +4,7 @@ def main():
     agrumentList = sys.argv
 ##    if len(sys.argv) != 2:
 ##        print("ERROR - Enter correct parameters - wordgame.py [word1] [word2]")
-##        return
+##        return dfdfd
 ##    fileName = sys.argv[1]
 
     #doesn't really run on the full file
