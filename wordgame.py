@@ -111,7 +111,7 @@ def runTrial(wordGraph):
             try:
                 neighborList = wordGraph[userWord]
 
-                print("The neighbors of SHALE are:")
+                print("The neighbors of "+userWord+" are:")
                 numTotal = 0
 
                 for v in neighborList:
