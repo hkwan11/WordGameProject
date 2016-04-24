@@ -2,13 +2,13 @@ import sys
 
 def main():
     agrumentList = sys.argv
-    if len(sys.argv) != 2:
-        print("ERROR - Enter correct parameters - wordgame.py [fileName]")
-        return
-    fileName = sys.argv[1]
+##    if len(sys.argv) != 2:
+##        print("ERROR - Enter correct parameters - wordgame.py [fileName]")
+##        return
+##    fileName = sys.argv[1]
 
     #doesn't really run on the full file
-#    fileName = "5lw.dat"
+    fileName = "5lw-s.dat"
     
     try:
         #try to read in file
@@ -49,12 +49,16 @@ def createGraph(lines):
                     letterPos = (ord(word[c]) % 26)
 
                     for pst in pastWordList[letterPos][c]:
+                        print("Past Word of " + word + ": " + pst)
                         try:
                             occur = pastWords[pst] + 1
                             pastWords[pst] = occur
                             if occur == 3:
                                 pVert = Vertex(pst)
                                 neighborList.append(pVert)
+                                wordGraph[pst].append(v) #This was the missing line of
+                                                            #code that messed up our
+                                                            #results
                         except KeyError:
                             #print(pst)
                             pastWords[pst] = 1
