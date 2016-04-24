@@ -1,7 +1,4 @@
 import sys
-import Heap import *
-
-vertexDict = {}
 
 def main():
     agrumentList = sys.argv
@@ -23,7 +20,7 @@ def main():
 
     lines = file.readlines()
 
-    wordGraph = createGraph(vertexDict, lines)
+    wordGraph = createGraph(lines)
 
     #Run test based on user input
     
@@ -32,7 +29,7 @@ def main():
         rerun = runTrial(wordGraph)
         
 
-def createGraph(vertexDict, lines):
+def createGraph(lines):
     wordGraph = {}
 
     pastWordList = [[[] for x in range(5)] for y in range(26)]
@@ -43,10 +40,7 @@ def createGraph(vertexDict, lines):
 
         for word in words:
             if len(word) > 0 and word != "\n":
-                try:
-                    vertexDict[word]
-                except:
-                    vertexDict[word] = Vertex(word)
+                v = Vertex(word)
                 neighborList = []
 
                 pastWords = {}
@@ -60,11 +54,11 @@ def createGraph(vertexDict, lines):
                             occur = pastWords[pst] + 1
                             pastWords[pst] = occur
                             if occur == 3:
-                                pVert = vertexDict[pst]
+                                pVert = Vertex(pst)
                                 neighborList.append(pVert)
-                                wordGraph[pst].append(vertexDict[word])
-                                #This was the missing line of
-                                #code that messed up our results
+                                wordGraph[pst].append(v) #This was the missing line of
+                                                            #code that messed up our
+                                                            #results
                         except KeyError:
                             #print(pst)
                             pastWords[pst] = 1
@@ -103,12 +97,6 @@ def getMissScore(w1, w2, wLen):
         return 0
     else:
         return -1
-
-def playGame(wordGraph, rootWord, targetWord):
-    #iterate through all keys in the graph
-    print("TERE")#for v in wordGraph:
-        
-        
 
 def runTrial(wordGraph):
     #asks the user to input word to check
@@ -161,40 +149,6 @@ def runTrial(wordGraph):
     else:
         print("Sorry, that is not a valid input")
 
-def dijkstra(graph, root, target):
-    #sets root
-    r = vertexDict[root]
-
-    #initialize all vertices
-    for word in graph:
-        v = vertexDict[word]
-        v.setKey(-1)
-        v.setPredecessor(None)
-
-    #initialize the root to 0
-    r.setKey(0)
-    #INITIALIZE HEAP (PRIORITY QUEUE)
-    priorityHeap = Heap()
-    for v in vertexDict:
-        priorityHeap.insert(vertexDict[v])
-
-    #While priority queue is not empty
-    while priorityQueue.getHeapsize() > 0:
-        #remove min of heap
-        u = priorityHeap.removeMin()
-
-        #iterate through the adjacency list of u
-        for v in graph[u.getName()]:
-            uKey = u.getKey() + weight(u,v)
-            if uKey < v.getKey():
-                v.setPredecessor(u)
-                v.setKey(uKey)
-                priorityHeap.heapifyUp(v.getHandle())
-
-
-def weight(u, v):
-    return u.getKey() + v.getKey()
-
 
 class Vertex:
     """Vertex Class"""
@@ -202,23 +156,13 @@ class Vertex:
     def __init__(self, word):
         self.key = -1
         self.handle = -1
-        self.predecessor = None
         self.word = word
-
-    def getPredecessor(self):
-        return self.predecessor
-
-    def setPredecessor(self, pred):
-        self.predecessor = pred
 
     def getHandle(self):
         return self.handle
 
     def setHandle(self, handle):
         self.handle = handle
-
-    def setKey(self, key)
-        self.key = key
 
     def getKey(self):
         return self.key
