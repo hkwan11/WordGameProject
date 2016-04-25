@@ -1,5 +1,5 @@
 import sys
-import Heap import *
+from Heap import *
 
 vertexDict = {}
 
@@ -25,11 +25,16 @@ def main():
 
     wordGraph = createGraph(vertexDict, lines)
 
-    #Run test based on user input
+    h = dijkstra(wordGraph, "TOAST", "")
+
+    h.printHeap()
     
-    rerun = runTrial(wordGraph)
-    while(rerun):
-        rerun = runTrial(wordGraph)
+
+    #Run test based on user input
+##    
+##    rerun = runTrial(wordGraph)
+##    while(rerun):
+##        rerun = runTrial(wordGraph)
         
 
 def createGraph(vertexDict, lines):
@@ -179,21 +184,39 @@ def dijkstra(graph, root, target):
         priorityHeap.insert(vertexDict[v])
 
     #While priority queue is not empty
-    while priorityQueue.getHeapsize() > 0:
+    while priorityHeap.getHeapsize() > 0:
         #remove min of heap
         u = priorityHeap.removeMin()
 
         #iterate through the adjacency list of u
-        for v in graph[u.getName()]:
+        for v in graph[u.getWord()]:
             uKey = u.getKey() + weight(u,v)
-            if uKey < v.getKey():
+            if uKey < v.getKey(): #THIS IS RELAX
                 v.setPredecessor(u)
                 v.setKey(uKey)
                 priorityHeap.heapifyUp(v.getHandle())
 
+    return priorityHeap
+
 
 def weight(u, v):
-    return u.getKey() + v.getKey()
+    weight = 0
+    curVertex = v
+
+    #print(curVertex.getPredecessor())
+
+    while curVertex.getPredecessor() != None:
+        score = getMissScore(curVertex.getPredecessor().getWord(), curVertex.getWord(), len(v.getWord()))
+
+        print("CurWord: " + curVertex.getWord() + "  Score: " + str(score))
+
+        weight = weight + score
+        
+        curVertex = curVertex.getPredecessor()
+
+    print("weight: " + str(weight))
+    return weight
+    #return v.getKey() + 1
 
 
 class Vertex:
@@ -204,6 +227,7 @@ class Vertex:
         self.handle = -1
         self.predecessor = None
         self.word = word
+    
 
     def getPredecessor(self):
         return self.predecessor
@@ -217,7 +241,7 @@ class Vertex:
     def setHandle(self, handle):
         self.handle = handle
 
-    def setKey(self, key)
+    def setKey(self, key):
         self.key = key
 
     def getKey(self):
@@ -225,4 +249,11 @@ class Vertex:
 
     def getWord(self):
         return self.word
+
+    def __str__(self):
+        return "(" + self.word + ": KEY[" + str(self.key) + "] HANDLE[" + str(self.handle) + "])"
+    
+    def __repr__(self):
+        return self.__str__()
+    
 main()
