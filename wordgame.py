@@ -28,6 +28,11 @@ def main():
     h = dijkstra(wordGraph, "TOAST", "")
 
     h.printHeap()
+
+##    for v in vertexDict:
+##        print(v + " " + str(vertexDict[v].getKey()))
+
+    print("PREDECESSOR OF ROAST: " + str(vertexDict["ROAST"].getPredecessor()))
     
 
     #Run test based on user input
@@ -60,13 +65,16 @@ def createGraph(vertexDict, lines):
                     letterPos = (ord(word[c]) % 26)
 
                     for pst in pastWordList[letterPos][c]:
-                        print("Past Word of " + word + ": " + pst)
+                        #print("Past Word of " + word + ": " + pst)
                         try:
                             occur = pastWords[pst] + 1
                             pastWords[pst] = occur
                             if occur == 3:
                                 pVert = vertexDict[pst]
-                                neighborList.append(pVert)
+                                missScore = getMissScore(word, pVert.getWord(), len(word))
+                                
+                                vertexDict[pst].setKey(missScore)
+                                neighborList.append(vertexDict[pst])
                                 wordGraph[pst].append(vertexDict[word])
                                 #This was the missing line of
                                 #code that messed up our results
@@ -188,35 +196,50 @@ def dijkstra(graph, root, target):
         #remove min of heap
         u = priorityHeap.removeMin()
 
+        print("We're working with: " + u.getWord())
+        #print(graph[u.getWord()])
+
         #iterate through the adjacency list of u
         for v in graph[u.getWord()]:
-            uKey = u.getKey() + weight(u,v)
-            if uKey < v.getKey(): #THIS IS RELAX
-                v.setPredecessor(u)
-                v.setKey(uKey)
-                priorityHeap.heapifyUp(v.getHandle())
+
+            if vertexDict[u.getWord()].getKey() == -1:
+                vertexDict[u.getWord()].setKey(weight(u,v))
+            uKey = vertexDict[u.getWord()].getKey() + weight(u,v)
+            
+            print("v: " + v.getWord() + " u:" + u.getWord() + " uKey = " + str(uKey))
+            print("VKey: " + str(vertexDict[v.getWord()].getKey()))
+            if uKey < vertexDict[v.getWord()].getKey(): #THIS IS RELAX
+
+                print("PRED PUT IN: " + str(vertexDict[u.getWord()].getWord()))
+                vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
+                print("PRED GOT OUT: " + str(vertexDict[v.getWord()].getPredecessor().getWord()))
+                
+                vertexDict[v.getWord()].setKey(uKey)
+                priorityHeap.heapifyUp(vertexDict[v.getWord()].getHandle())
+                
 
     return priorityHeap
 
 
 def weight(u, v):
-    weight = 0
-    curVertex = v
-
-    #print(curVertex.getPredecessor())
-
-    while curVertex.getPredecessor() != None:
-        score = getMissScore(curVertex.getPredecessor().getWord(), curVertex.getWord(), len(v.getWord()))
-
-        print("CurWord: " + curVertex.getWord() + "  Score: " + str(score))
-
-        weight = weight + score
-        
-        curVertex = curVertex.getPredecessor()
-
-    print("weight: " + str(weight))
-    return weight
-    #return v.getKey() + 1
+##    weight = 0
+##    curVertex = v
+##
+##    #print(curVertex.getPredecessor())
+##
+##    while curVertex.getPredecessor() != None:
+##        score = getMissScore(curVertex.getPredecessor().getWord(), curVertex.getWord(), len(v.getWord()))
+##
+##        print("CurWord: " + curVertex.getWord() + "  Score: " + str(score))
+##
+##        weight = weight + score
+##        
+##        curVertex = curVertex.getPredecessor()
+##
+##    print("weight: " + str(weight))
+##    return weight
+##    #return v.getKey() + 1
+    return getMissScore(vertexDict[u.getWord()].getWord(), vertexDict[v.getWord()].getWord(), len(v.getWord()))
 
 
 class Vertex:
