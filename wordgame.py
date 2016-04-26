@@ -25,12 +25,18 @@ def main():
 
     wordGraph = createGraph(vertexDict, lines)
 
-    h = dijkstra(wordGraph, "TOAST", "")
+    h = dijkstra(wordGraph, "TOAST")
 
-    h.printHeap()
+    #h.printHeap()
 
-##    for v in vertexDict:
-##        print(v + " " + str(vertexDict[v].getKey()))
+    for w in vertexDict:
+        #print(w)
+        #print(wordGraph[w])
+        pred = vertexDict[w].getPredecessor()
+        predWord = "NONE"
+        if pred != None:
+            predWord = pred.getWord()
+        print(w + ": " + predWord)
 
     print("PREDECESSOR OF ROAST: " + str(vertexDict["ROAST"].getPredecessor()))
     
@@ -174,18 +180,14 @@ def runTrial(wordGraph):
     else:
         print("Sorry, that is not a valid input")
 
-def dijkstra(graph, root, target):
-    #sets root
-    r = vertexDict[root]
-
+def dijkstra(adjGraph, root):
     #initialize all vertices
-    for word in graph:
-        v = vertexDict[word]
-        v.setKey(-1)
-        v.setPredecessor(None)
+    for word in adjGraph:
+        vertexDict[word].setKey(-1)
+        vertexDict[word].setPredecessor(None)
 
     #initialize the root to 0
-    r.setKey(0)
+    vertexDict[root].setKey(0)
     #INITIALIZE HEAP (PRIORITY QUEUE)
     priorityHeap = Heap()
     for v in vertexDict:
@@ -200,19 +202,20 @@ def dijkstra(graph, root, target):
         #print(graph[u.getWord()])
 
         #iterate through the adjacency list of u
-        for v in graph[u.getWord()]:
+        for v in adjGraph[u.getWord()]:
+            #print("Neighbor working with: " + v.getWord())
 
             if vertexDict[u.getWord()].getKey() == -1:
                 vertexDict[u.getWord()].setKey(weight(u,v))
             uKey = vertexDict[u.getWord()].getKey() + weight(u,v)
             
-            print("v: " + v.getWord() + " u:" + u.getWord() + " uKey = " + str(uKey))
-            print("VKey: " + str(vertexDict[v.getWord()].getKey()))
+            #print("v: " + v.getWord() + " u:" + u.getWord() + " uKey = " + str(uKey))
+            #print("VKey: " + str(vertexDict[v.getWord()].getKey()))
             if uKey < vertexDict[v.getWord()].getKey(): #THIS IS RELAX
 
-                print("PRED PUT IN: " + str(vertexDict[u.getWord()].getWord()))
+                print("PRED PUT IN FOR: " + str(vertexDict[u.getWord()].getWord()))
                 vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
-                print("PRED GOT OUT: " + str(vertexDict[v.getWord()].getPredecessor().getWord()))
+                print("PRED PUT IN: " + str(vertexDict[v.getWord()].getPredecessor().getWord()))
                 
                 vertexDict[v.getWord()].setKey(uKey)
                 priorityHeap.heapifyUp(vertexDict[v.getWord()].getHandle())
