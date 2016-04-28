@@ -12,11 +12,11 @@ def main():
 
     #doesn't really run on the full file
     fileName = "5lw-s.dat"
-    
+
     try:
         #try to read in file
         file = open(fileName, "r")
-        
+
     except IOError:
         print("ERROR - Unable to open specified file " + fileName)
         return
@@ -41,20 +41,20 @@ def main():
     testWord = "TOADS"
 
     print("PREDECESSOR OF "+testWord+": " + str(vertexDict[testWord].getPredecessor()))
-    
+
 
     #Run test based on user input
-##    
+##
 ##    rerun = runTrial(wordGraph)
 ##    while(rerun):
 ##        rerun = runTrial(wordGraph)
-        
+
 
 def createGraph(vertexDict, lines):
     wordGraph = {}
 
     pastWordList = [[[] for x in range(5)] for y in range(26)]
-    
+
     for line in lines:
         l = line.split("\n")
         words = l[0].split(" ")
@@ -80,7 +80,7 @@ def createGraph(vertexDict, lines):
                             if occur == 3:
                                 pVert = vertexDict[pst]
                                 missScore = getMissScore(word, pVert.getWord(), len(word))
-                                
+
                                 vertexDict[pst].setKey(missScore)
                                 neighborList.append(vertexDict[pst])
                                 wordGraph[pst].append(vertexDict[word])
@@ -90,10 +90,10 @@ def createGraph(vertexDict, lines):
                             #print(pst)
                             pastWords[pst] = 1
                         #print(pastWords)
-                        
+
                     pastWordList[letterPos][c].append(word)
                 #print(neighborList)
-                
+
 ##                for k in wordGraph:
 ##                    missScore = getMissScore(word, k, len(word))
 ##
@@ -128,8 +128,8 @@ def getMissScore(w1, w2, wLen):
 def playGame(wordGraph, rootWord, targetWord):
     #iterate through all keys in the graph
     print("TERE")#for v in wordGraph:
-        
-        
+
+
 
 def runTrial(wordGraph):
     #asks the user to input word to check
@@ -160,11 +160,11 @@ def runTrial(wordGraph):
                         print()
                     print(v.getWord() + " (" + str(score) + ") ", end = " ")
                     numTotal = numTotal + 1
-                
+
             except KeyError:
                 print(userWord + " is not in the graph!")
                 return 1
-        
+
     #if incorrect length, it is caught
     except ValueError as err:
         print(err.args)
@@ -190,6 +190,7 @@ def dijkstra(adjGraph, root):
 
     #initialize the root to 0
     vertexDict[root].setKey(0)
+
     #INITIALIZE HEAP (PRIORITY QUEUE)
     priorityHeap = Heap()
     for v in vertexDict:
@@ -203,18 +204,14 @@ def dijkstra(adjGraph, root):
         #iterate through the adjacency list of u
         for v in adjGraph[u.getWord()]:
 
-            if vertexDict[u.getWord()].getKey() == -1:
-                vertexDict[u.getWord()].setKey(weight(u,v))
-                
-                vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
             uKey = vertexDict[u.getWord()].getKey() + weight(u,v)
-        
+
             if uKey < vertexDict[v.getWord()].getKey(): #THIS IS RELAX
                 vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
-  
+
                 vertexDict[v.getWord()].setKey(uKey)
                 priorityHeap.heapifyUp(vertexDict[v.getWord()].getHandle())
-                
+
 
     return priorityHeap
 
@@ -231,7 +228,7 @@ class Vertex:
         self.handle = -1
         self.predecessor = None
         self.word = word
-    
+
 
     def getPredecessor(self):
         return self.predecessor
@@ -256,8 +253,8 @@ class Vertex:
 
     def __str__(self):
         return "(" + self.word + ": KEY[" + str(self.key) + "] HANDLE[" + str(self.handle) + "])"
-    
+
     def __repr__(self):
         return self.__str__()
-    
+
 main()
