@@ -27,7 +27,7 @@ def main():
 
     h = dijkstra(wordGraph, "TOAST")
 
-    #h.printHeap()
+    h.printHeap()
 
     for w in vertexDict:
         #print(w)
@@ -185,7 +185,7 @@ def runTrial(wordGraph):
 def dijkstra(adjGraph, root):
     #initialize all vertices
     for word in adjGraph:
-        vertexDict[word].setKey(-1)
+        vertexDict[word].setKey(float('inf'))
         vertexDict[word].setPredecessor(None)
 
     #initialize the root to 0
@@ -200,30 +200,18 @@ def dijkstra(adjGraph, root):
         #remove min of heap
         u = priorityHeap.removeMin()
 
-        print("We're working with: " + u.getWord())
-        #print(graph[u.getWord()])
-
         #iterate through the adjacency list of u
         for v in adjGraph[u.getWord()]:
-            #print("Neighbor working with: " + v.getWord())
 
             if vertexDict[u.getWord()].getKey() == -1:
                 vertexDict[u.getWord()].setKey(weight(u,v))
-
-                print("Setting pred of " + v.getWord() + " to " + u.getWord())
                 
                 vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
             uKey = vertexDict[u.getWord()].getKey() + weight(u,v)
         
-            #print("v: " + v.getWord() + " u:" + u.getWord() + " uKey = " + str(uKey))
-            #print("VKey: " + str(vertexDict[v.getWord()].getKey()))
-            #print("        ukey = "+ str(vertexDict[u.getWord()].getKey()) + " + " + str(weight(u,v)))
             if uKey < vertexDict[v.getWord()].getKey(): #THIS IS RELAX
-
-                #print("PRED PUT IN FOR: " + str(vertexDict[u.getWord()].getWord()))
                 vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
-                #print("PRED PUT IN: " + str(vertexDict[v.getWord()].getPredecessor().getWord()))
-                
+  
                 vertexDict[v.getWord()].setKey(uKey)
                 priorityHeap.heapifyUp(vertexDict[v.getWord()].getHandle())
                 
@@ -232,23 +220,6 @@ def dijkstra(adjGraph, root):
 
 
 def weight(u, v):
-##    weight = 0
-##    curVertex = v
-##
-##    #print(curVertex.getPredecessor())
-##
-##    while curVertex.getPredecessor() != None:
-##        score = getMissScore(curVertex.getPredecessor().getWord(), curVertex.getWord(), len(v.getWord()))
-##
-##        print("CurWord: " + curVertex.getWord() + "  Score: " + str(score))
-##
-##        weight = weight + score
-##        
-##        curVertex = curVertex.getPredecessor()
-##
-##    print("weight: " + str(weight))
-##    return weight
-##    #return v.getKey() + 1
     return getMissScore(vertexDict[u.getWord()].getWord(), vertexDict[v.getWord()].getWord(), len(v.getWord()))
 
 
