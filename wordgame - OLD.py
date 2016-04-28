@@ -8,7 +8,7 @@ def main():
 ##    fileName = sys.argv[1]
 
     #doesn't really run on the full file
-    fileName = "5lw-s.dat"
+    fileName = "5lw.dat"
     
     try:
         #try to read in file
@@ -49,7 +49,7 @@ def createGraph(lines):
                     letterPos = (ord(word[c]) % 26)
 
                     for pst in pastWordList[letterPos][c]:
-                        print("Past Word of " + word + ": " + pst)
+                        #print("Past Word of " + word + ": " + pst)
                         try:
                             occur = pastWords[pst] + 1
                             pastWords[pst] = occur

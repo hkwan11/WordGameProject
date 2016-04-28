@@ -38,7 +38,9 @@ def main():
             predWord = pred.getWord()
         print(w + ": " + predWord)
 
-    print("PREDECESSOR OF ROAST: " + str(vertexDict["ROAST"].getPredecessor()))
+    testWord = "TOADS"
+
+    print("PREDECESSOR OF "+testWord+": " + str(vertexDict[testWord].getPredecessor()))
     
 
     #Run test based on user input
