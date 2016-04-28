@@ -209,15 +209,20 @@ def dijkstra(adjGraph, root):
 
             if vertexDict[u.getWord()].getKey() == -1:
                 vertexDict[u.getWord()].setKey(weight(u,v))
+
+                print("Setting pred of " + v.getWord() + " to " + u.getWord())
+                
+                vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
             uKey = vertexDict[u.getWord()].getKey() + weight(u,v)
-            
+        
             #print("v: " + v.getWord() + " u:" + u.getWord() + " uKey = " + str(uKey))
             #print("VKey: " + str(vertexDict[v.getWord()].getKey()))
+            #print("        ukey = "+ str(vertexDict[u.getWord()].getKey()) + " + " + str(weight(u,v)))
             if uKey < vertexDict[v.getWord()].getKey(): #THIS IS RELAX
 
-                print("PRED PUT IN FOR: " + str(vertexDict[u.getWord()].getWord()))
+                #print("PRED PUT IN FOR: " + str(vertexDict[u.getWord()].getWord()))
                 vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
-                print("PRED PUT IN: " + str(vertexDict[v.getWord()].getPredecessor().getWord()))
+                #print("PRED PUT IN: " + str(vertexDict[v.getWord()].getPredecessor().getWord()))
                 
                 vertexDict[v.getWord()].setKey(uKey)
                 priorityHeap.heapifyUp(vertexDict[v.getWord()].getHandle())
