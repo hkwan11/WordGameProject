@@ -51,61 +51,77 @@ def main():
         
 
 def createGraph(vertexDict, lines):
+    #initialize graph of words
     wordGraph = {}
 
+    #initialize empty 2d list of empty lists to store past
+    #   words put in the graph. The dimensions representing
+    #   every possible letter, and each letter position in
+    #   a word
     pastWordList = [[[] for x in range(5)] for y in range(26)]
-    
+
+    #iterate through every line in the input file
     for line in lines:
+        #split by words
         l = line.split("\n")
         words = l[0].split(" ")
 
+        #iterate through every word in file
         for word in words:
+            #if it's an actual word
             if len(word) > 0 and word != "\n":
+                #see if it's in our dictionary of vertices
                 try:
                     vertexDict[word]
                 except:
+                    #if not, add it
                     vertexDict[word] = Vertex(word)
+                #initialize an empty list to stor current word's neighbors
                 neighborList = []
 
+                #initialize dictionary used to keep track of similarly spelled
+                #   words
                 pastWords = {}
 
+                #iterate through every character in word
                 for c in range(len(word)):
+                    #get value of letter in order to access correct 2d list pos
                     letterPos = (ord(word[c]) % 26)
 
+                    #check every word that has had a letter in the same position
                     for pst in pastWordList[letterPos][c]:
-                        #print("Past Word of " + word + ": " + pst)
+                    
                         try:
+                            #if we've run into this word before, increment counter
                             occur = pastWords[pst] + 1
                             pastWords[pst] = occur
+                            #if we've run into the word 3 times, they differ by at
+                            #   most 2 letters
                             if occur == 3:
+                                #Add vertex to dictionary
                                 pVert = vertexDict[pst]
+                                #calculate score for difference between words
                                 missScore = getMissScore(word, pVert.getWord(), len(word))
-                                
+
+                                #store the word in neighborlist and add back
                                 vertexDict[pst].setKey(missScore)
                                 neighborList.append(vertexDict[pst])
                                 wordGraph[pst].append(vertexDict[word])
-                                #This was the missing line of
-                                #code that messed up our results
                         except KeyError:
-                            #print(pst)
+                            #if not, add it to pastWords and intialize to 1
                             pastWords[pst] = 1
-                        #print(pastWords)
-                        
+                    
+                    #Add word to the list in that given letter/pos slot
                     pastWordList[letterPos][c].append(word)
-                #print(neighborList)
-                
-##                for k in wordGraph:
-##                    missScore = getMissScore(word, k, len(word))
-##
-##                    if missScore != -1:
-##                        vertexK = Vertex(k)
-##                        neighborList.append(vertexK)
-##                        wordGraph[k].append(v)
+
                 try:
+                    #if word already in wordgraph, append
                     wordGraph[word].append(neighborList)
                 except KeyError:
+                    #if not, initialize
                     wordGraph[word] = neighborList
 
+    #return wordGraph
     return wordGraph
 
 def getMissScore(w1, w2, wLen):
@@ -124,11 +140,6 @@ def getMissScore(w1, w2, wLen):
         return 0
     else:
         return -1
-
-def playGame(wordGraph, rootWord, targetWord):
-    #iterate through all keys in the graph
-    print("TERE")#for v in wordGraph:
-        
         
 
 def runTrial(wordGraph):
@@ -203,10 +214,6 @@ def dijkstra(adjGraph, root):
         #iterate through the adjacency list of u
         for v in adjGraph[u.getWord()]:
 
-            if vertexDict[u.getWord()].getKey() == -1:
-                vertexDict[u.getWord()].setKey(weight(u,v))
-                
-                vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
             uKey = vertexDict[u.getWord()].getKey() + weight(u,v)
         
             if uKey < vertexDict[v.getWord()].getKey(): #THIS IS RELAX
