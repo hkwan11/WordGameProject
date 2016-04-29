@@ -125,10 +125,6 @@ def getMissScore(w1, w2, wLen):
     else:
         return -1
 
-def playGame(wordGraph, rootWord, targetWord):
-    #iterate through all keys in the graph
-    print("TERE")#for v in wordGraph:
-
 
 
 def runTrial(wordGraph):
