@@ -5,13 +5,13 @@ vertexDict = {}
 
 def main():
     agrumentList = sys.argv
-##    if len(sys.argv) != 2:
-##        print("ERROR - Enter correct parameters - wordgame.py [fileName]")
-##        return
-##    fileName = sys.argv[1]
+    if len(sys.argv) != 2:
+        print("ERROR - Enter correct parameters - wordgame.py [fileName]")
+        return
+    fileName = sys.argv[1]
 
     #doesn't really run on the full file
-    fileName = "5lw.dat"
+    #fileName = "5lw.dat"
     
     try:
         #try to read in file
