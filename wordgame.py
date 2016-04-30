@@ -274,7 +274,7 @@ def findPath(wordGraph, word1, word2):
 
         curVertex = curVertex.getPredecessor()
 
-    print("\n\t\tpathString")
+    print("\n\t\t"+tpathString)
 
     return 0
 
