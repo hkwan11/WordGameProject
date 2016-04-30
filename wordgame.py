@@ -11,7 +11,7 @@ def main():
 ##    fileName = sys.argv[1]
 
     #doesn't really run on the full file
-    fileName = "5lw-s.dat"
+    fileName = "5lw.dat"
     
     try:
         #try to read in file
@@ -25,25 +25,11 @@ def main():
 
     wordGraph = createGraph(vertexDict, lines)
 
-    h = dijkstra(wordGraph, "TOAST")
+    rerun = runGameTrial(wordGraph)
+    while(rerun):
+        rerun = runGameTrial(wordGraph)
 
-    h.printHeap()
-
-    for w in vertexDict:
-        #print(w)
-        #print(wordGraph[w])
-        pred = vertexDict[w].getPredecessor()
-        predWord = "NONE"
-        if pred != None:
-            predWord = pred.getWord()
-        print(w + ": " + predWord)
-
-    testWord = "TOADS"
-
-    print("PREDECESSOR OF "+testWord+": " + str(vertexDict[testWord].getPredecessor()))
-    
-
-    #Run test based on user input
+    #Run test based on user input --- FOR PART 1
 ##    
 ##    rerun = runTrial(wordGraph)
 ##    while(rerun):
@@ -123,6 +109,7 @@ def createGraph(vertexDict, lines):
 
     #return wordGraph
     return wordGraph
+
 
 def getMissScore(w1, w2, wLen):
     missScore = 0
@@ -224,6 +211,66 @@ def dijkstra(adjGraph, root):
                 
 
     return priorityHeap
+
+def runGameTrial(wordGraph):
+    #Ask for both input words to find a path between them
+    rootWord = input("\nEnter the first five-letter word: ").upper()
+    checkWord = input("Enter the second five-letter word: ").upper()
+
+    #find and print path and best score
+    if(findPath(wordGraph, rootWord, checkWord)):
+        return 1
+
+    ### ----Ask User If they desire to do another trial---- ###
+    doTrial = input("\nDo you wish to complete another trial? (Y/Yes, N/No) ")
+    doTrial = doTrial.upper()
+    #print(doTrial)
+
+    if doTrial == "Y" or doTrial == "YES":
+        return 1
+    elif doTrial == "N" or doTrial == "NO":
+        return 0
+    else:
+        print("Sorry, that is not a valid input")
+
+
+def findPath(wordGraph, word1, word2):
+
+    #Check to see both words are in the graph!
+    try:
+        vertexDict[word1]
+    except KeyError:
+        print("WHOOPS! - " + word1 + " isn't in the graph!")
+        return 1
+
+    try:
+        vertexDict[word2]
+    except KeyError:
+        print("WHOOPS! - " + word2 + " isn't in the graph!")
+        return 1
+    
+    #First call dijkstra making word1 as root
+    dijkstra(wordGraph, word1)
+    #Now all adjacencies should be correct
+
+    #Get the vertex for word2 and store it's distance score
+    curVertex = vertexDict[word2]
+    bestScore = curVertex.getKey()
+
+    print("The best score for " + word1 + " to " + word2 + " is " + str(bestScore) + " points.")
+
+    #initialize pathString to keep track of words in path
+    pathString = ""
+
+    #While we haven't reached the end of the path, store current word and go to next
+    while(curVertex != None):
+        pathString = curVertex.getWord() + " " + pathString
+
+        curVertex = curVertex.getPredecessor()
+
+    print(pathString)
+
+    return 0
 
 
 def weight(u, v):
