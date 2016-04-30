@@ -4,14 +4,15 @@ from Heap import *
 vertexDict = {}
 
 def main():
+    #Gets the command line argument for the input file name
     agrumentList = sys.argv
     if len(sys.argv) != 2:
         print("ERROR - Enter correct parameters - wordgame.py [fileName]")
         return
     fileName = sys.argv[1]
 
-    #doesn't really run on the full file
-    #fileName = "5lw.dat"
+    #This is for when not using command line arguments
+        #fileName = "5lw.dat"
     
     try:
         #try to read in file
@@ -21,10 +22,11 @@ def main():
         print("ERROR - Unable to open specified file " + fileName)
         return
 
+    #read in all ines from file
     lines = file.readlines()
-
     wordGraph = createGraph(vertexDict, lines)
 
+    #Run the trial continously until ended
     rerun = runGameTrial(wordGraph)
     while(rerun):
         rerun = runGameTrial(wordGraph)
@@ -112,13 +114,16 @@ def createGraph(vertexDict, lines):
 
 
 def getMissScore(w1, w2, wLen):
+    #initialize score to 0
     missScore = 0
 
+    #count the number of letters differing between
+    #   The two words
     for i in range(wLen):
-        #print("WORD IS: " + w1)
         if w1[i] != w2[i]:
             missScore = missScore + 1
 
+    #return an appropriate score based off of differences
     if missScore == 2:
         return 5
     elif missScore == 1:
@@ -202,8 +207,9 @@ def dijkstra(adjGraph, root):
         for v in adjGraph[u.getWord()]:
 
             uKey = vertexDict[u.getWord()].getKey() + weight(u,v)
-        
-            if uKey < vertexDict[v.getWord()].getKey(): #THIS IS RELAX
+
+            #relax the graph
+            if uKey < vertexDict[v.getWord()].getKey():
                 vertexDict[v.getWord()].setPredecessor(vertexDict[u.getWord()])
   
                 vertexDict[v.getWord()].setKey(uKey)
@@ -215,7 +221,7 @@ def dijkstra(adjGraph, root):
 def runGameTrial(wordGraph):
     #Ask for both input words to find a path between them
     rootWord = input("\nEnter the first five-letter word: ").upper()
-    checkWord = input("Enter the second five-letter word: ").upper()
+    checkWord = input("\nEnter the second five-letter word: ").upper()
 
     #find and print path and best score
     if(findPath(wordGraph, rootWord, checkWord)):
@@ -268,12 +274,13 @@ def findPath(wordGraph, word1, word2):
 
         curVertex = curVertex.getPredecessor()
 
-    print(pathString)
+    print("\n\t\tpathString")
 
     return 0
 
 
 def weight(u, v):
+    #return the weight of the two words (obtained via getting the miss score)
     return getMissScore(vertexDict[u.getWord()].getWord(), vertexDict[v.getWord()].getWord(), len(v.getWord()))
 
 
